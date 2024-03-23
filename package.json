@@ -1,6 +1,0 @@
-{
-  "name": "trumpet-prosthetic",
-  "scripts": {
-    "start": "cd ./trumpet-proxy/frontend && npm i && npm run build && cd ../backend && npm i && npm run start"
-  }
-}
