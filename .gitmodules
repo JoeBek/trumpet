@@ -1,0 +1,3 @@
+[submodule "trumpet-proxy"]
+	path = trumpet-proxy
+	url = https://github.com/isaact23/trumpet-proxy
