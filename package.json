@@ -1,5 +1,6 @@
 {
-  "dependencies": {
-    "openai": "^4.29.2"
+  "name": "trumpet-prosthetic",
+  "scripts": {
+    "start": "cd ./trumpet-proxy-backend && npm run go"
   }
 }

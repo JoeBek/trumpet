@@ -9,7 +9,7 @@ export async function query(): Promise<string | null> {
       {
         role: "user",
         content: [
-          {type: "text", text: "List the notes in order. Response format must be [A, G, E, etc.]"},
+          {type: "text", text: "What is the first note"},
           {type: "image_url", image_url: {
             url: "https://gcdnb.pbrd.co/images/TtNdHl5KlvQQ.png",
             detail: "auto"

@@ -8,12 +8,13 @@ const PATH = path.join(__dirname, "../frontend/build");
 const app = express();
 
 let img = null;
-let notes = "";
+let notes = "G A B C D";
 
 app.use(express.static(PATH));
 
 // Handle client request to upload image
 app.post("/img", async (req, res) => {
+
   // Store the image on the backend
 
   // Send image to OpenAI
