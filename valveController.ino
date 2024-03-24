@@ -4,18 +4,27 @@
 #include <unordered_map>
 #include <ESP32Servo.h>
 
+
+// parameters for different actuators 
 #define KEY1 1
 #define KEY2 2
 #define KEY3 3
-#define TURN_RADIUS 180
+#define TURN_RADIUS 15
+#define LOW 90
+#define key1_offset 0
+#define key2_offset 30
+#define key3_offset 20
 
-int key1pressed = 0;
-int key2pressed = 0;
-int key3pressed = 0;
+
+
+
+int key1pressed = 1;
+int key2pressed = 1;
+int key3pressed = 1;
 
 // Define the GPIO pins for the servo signals
-int servoPin1 = 18; // First servo
-int servoPin2 = 19; // Second servo
+int servoPin1 = 19; // First servo
+int servoPin2 = 18; // Second servo
 int servoPin3 = 21; // Third servo
 
 // Create servo objects
@@ -27,6 +36,7 @@ Servo servo3;
 
 void setup() {
 
+/*
   ESP32PWM::allocateTimer(0);
   ESP32PWM::allocateTimer(1);
   ESP32PWM::allocateTimer(2);
@@ -36,11 +46,19 @@ void setup() {
   servo1.attach(servoPin1, 500, 2400); // Attaches the first servo on pin to the servo object
   servo2.attach(servoPin2, 500, 2400); // Attaches the second servo on pin to the servo object
   servo3.attach(servoPin3, 500, 2400); // Attaches the third servo on pin to the servo object
+*/
+
+  servo1.attach(servoPin1);
+  servo2.attach(servoPin2);
+  servo3.attach(servoPin3);
+  servo1.write(LOW + key1_offset);
+  servo2.write(LOW + key2_offset);
+  servo3.write(LOW + key3_offset);
 
   Serial.begin(115200);
 
-char* ssid = "Josef's Iphone";
-char* password = "shrubsandhedges";
+char* ssid = "Samuel iPhone";
+char* password = "fortnite";
 
   // init wifi connection
   WiFi.begin(ssid, password);
@@ -61,17 +79,22 @@ void loop() {
     DynamicJsonDocument doc(1024);
     if (parseJson(payload, doc)) {
       // The doc is now populated with the JSON payload
-      serializeJsonPretty(doc, Serial); // Print the JSON to the serial monitor
+      //serializeJsonPretty(doc, Serial); // Print the JSON to the serial monitor
 
       // work with json payload now
 
       // Iterate over the JSON array
-      JsonArray arr = doc.as<JsonArray>();
-      for (JsonObject elem : arr) {
+     
+      for (JsonPair kv : doc.as<JsonObject>()) {
+
+        const char* key = kv.key().c_str();
+
+        JsonObject elem = kv.value().as<JsonObject>();
+
         int time = elem["time"]; // Assuming "time" is the key for the time entry
-        int var1 = elem["var1"]; // Assuming "var1" is the key for the first flag
-        int var2 = elem["var2"]; // Assuming "var2" is the key for the second flag
-        int var3 = elem["var3"]; // Assuming "var3" is the key for the third flag
+        int var1 = elem["val1"]; // Assuming "var1" is the key for the first flag
+        int var2 = elem["val2"]; // Assuming "var2" is the key for the second flag
+        int var3 = elem["val3"]; // Assuming "var3" is the key for the third flag
 
         // Now you can work with the variables 'time', 'var1', 'var2', and 'var3'
         // For example, print them to the serial monitor
@@ -87,25 +110,27 @@ void loop() {
 
       // set note with helper function. Uncomment when the wifi connection works
 
-       /*
-       if (key1pressed != var1){
-          change(1, key1);
-       }
-       if (key2pressed != var2){
-          change(2, key2);
-       }
-       if (key3pressed != var3){
-          change(3, "key3");
-       }
+       
+       //if (key1pressed != var1){
+        change(1, var1);
+         // key1pressed = !key1pressed;
+       //}
+       //if (key2pressed != var2){
+        change(2, !var2);
+         // key2pressed = !key2pressed;
+       //}
+      // if (key3pressed != var3){
+        change(3, var3);
+        //  key3pressed = !key3pressed;
+       //}
        delay(time);
+       delay(1500);
+       
 
 
 
-      */
+      
       }
-
-
-
 
 
 
@@ -115,6 +140,10 @@ void loop() {
   } else {
     Serial.println("Failed to get payload");
   }
+  
+
+
+  
   delay(10000); // Wait for 10 seconds before the next request
 }
 
@@ -151,28 +180,20 @@ bool parseJson(const String& payload, JsonDocument& doc) {
 
 void change(int key, int pressed){
 
-  int angle = pressed * TURN_RADIUS;
+  //int angle = pressed * TURN_RADIUS;
+  int angle = pressed ? TURN_RADIUS : LOW;
   switch(key){
 
-    
     case KEY1:
-        servo1.write(angle);
+        servo1.write(angle + key1_offset);
         break;
     case KEY2:
-        servo2.write(angle);
+        servo2.write(angle + key2_offset);
         break;
     case KEY3:
-        servo3.write(angle);
+        servo3.write(angle + key3_offset);
         break;
-
-
-        
-
 
   }
 
 }
-
-
-
-
